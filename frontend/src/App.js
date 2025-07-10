@@ -34,8 +34,6 @@ function App() {
         <Route path="/admin/:id/profil" element={<AdminProfil />} />
         <Route path="/admin/:id/produits" element={<AdminProduits />} />
         <Route path="/admin/:id/utilisateurs" element={<AdminUtilisateurs />} />
-
-
       </Routes>
     </Router>
 
