@@ -1,0 +1,46 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles de base globaux */
+@layer base {
+  body {
+    @apply bg-gray-100 text-gray-800 font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-gray-900;
+  }
+
+  a {
+    @apply text-yellow-600 hover:underline;
+  }
+}
+
+/* Composants personnalisés */
+@layer components {
+  .input-style {
+    @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400;
+  }
+
+  .btn {
+    @apply px-6 py-2 text-white rounded-md font-medium transition duration-200;
+  }
+
+  .btn-client {
+    @apply bg-blue-600 hover:bg-blue-700;
+  }
+
+  .btn-fournisseur {
+    @apply bg-green-600 hover:bg-green-700;
+  }
+
+  .btn-submit {
+    @apply bg-yellow-500 hover:bg-yellow-600;
+  }
+
+  .btn-retour {
+    @apply border border-gray-300 text-gray-600 hover:bg-gray-200;
+  }
+}
