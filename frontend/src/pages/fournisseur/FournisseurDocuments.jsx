@@ -1,64 +1,43 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
 const FournisseurDocuments = () => {
   const { id } = useParams();
   const [commandes, setCommandes] = useState([]);
-  const location = useLocation();
-  const { fournisseur, panier = [] } = location.state || {}; // éviter erreur si undefined
-  const date = new Date().toLocaleDateString();
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/fournisseurs/${id}/commandes`)
       .then((res) => setCommandes(res.data))
-      .catch((err) => console.error('Erreur lors de la récupération des commandes :', err));
+      .catch((err) =>
+        console.error('Erreur lors de la récupération des commandes :', err)
+      );
   }, [id]);
 
-  const genererPDF = () => {
-    const doc = new jsPDF();
-
-    // Titre
-    doc.setFontSize(18);
-    doc.setTextColor(0, 0, 0);
-    doc.text('BON DE COMMANDE', 150, 15, { align: 'right' });
-
-    // Nom entreprise
-    doc.setTextColor(255, 0, 0);
-    doc.text('Rita Fer', 14, 15);
-
-    // Infos fournisseur
-    doc.setFontSize(12);
-    doc.setTextColor(0);
-    doc.text(`Date : ${date}`, 14, 30);
-    doc.text(`Nom : ${fournisseur?.nom || ''}`, 14, 40);
-    doc.text(`Prénom : ${fournisseur?.prenom || ''}`, 100, 40);
-
-    // Tableau produits
-    autoTable(doc, {
-      startY: 60,
-      head: [['Modèle', 'Forme', 'Qté', 'Prix Unit.', 'Prix Total']],
-      body: panier.map((item) => [
-        item.nom,
-        item.type || '-',
-        item.quantite,
-        `${item.prixUnitaire} dh`,
-        `${item.total} dh`,
-      ]),
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [22, 160, 133] },
+  // Marquer comme vues automatiquement
+  useEffect(() => {
+    commandes.forEach((cmd) => {
+      if (!cmd.vuParFournisseur) {
+        axios
+          .put(`http://localhost:5000/api/fournisseurs/orders/${cmd._id}/vu`)
+          .then(() => console.log(`Commande ${cmd._id} marquée comme vue`))
+          .catch((err) =>
+            console.error('Erreur maj commande vue:', err)
+          );
+      }
     });
+  }, [commandes]);
 
-    const total = panier.reduce((sum, item) => sum + item.total, 0);
-    doc.text(`Total de ma commande : ${total} dh`, 14, doc.lastAutoTable.finalY + 10);
-
-    doc.save('BonDeCommande.pdf');
-  };
+  const today = new Date().toISOString().slice(0, 10);
+  const commandesAujourdhui = commandes.filter(
+    (cmd) => new Date(cmd.createdAt).toISOString().slice(0, 10) === today
+  );
+  const autresCommandes = commandes.filter(
+    (cmd) => new Date(cmd.createdAt).toISOString().slice(0, 10) !== today
+  );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -75,44 +54,74 @@ const FournisseurDocuments = () => {
             {commandes.length === 0 ? (
               <p className="text-gray-500">Aucune commande trouvée.</p>
             ) : (
-              <div className="space-y-4">
-                {commandes.map((cmd, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition"
-                  >
-                    <div>
-                      {cmd.clientId ? (
-                        <>
-                          <p className="font-medium text-gray-700">
-                            👤 Client : {cmd.clientId.nom} {cmd.clientId.prenom}
-                          </p>
-                          <p className="text-sm text-gray-500">{cmd.clientId.email}</p>
-                        </>
-                      ) : (
-                        <p className="font-medium text-red-600">
-                          ⚠️ Client supprimé
-                        </p>
-                      )}
-
-                      <p className="text-sm text-gray-400 mt-1">
-                        Date : {new Date(cmd.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={genererPDF}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                      📄 Télécharger PDF
-                    </button>
+              <>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">📅 Aujourd'hui</h3>
+                {commandesAujourdhui.length === 0 ? (
+                  <p className="text-sm text-gray-500 mb-6">Aucune commande aujourd'hui.</p>
+                ) : (
+                  <div className="space-y-4 mb-6">
+                    {commandesAujourdhui.map((cmd, i) => (
+                      <CommandeCard key={i} cmd={cmd} />
+                    ))}
                   </div>
-                ))}
-              </div>
+                )}
+
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">📁 Autres jours</h3>
+                {autresCommandes.length === 0 ? (
+                  <p className="text-sm text-gray-500">Aucune autre commande.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {autresCommandes.map((cmd, i) => (
+                      <CommandeCard key={i} cmd={cmd} />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+// Composant d'affichage des commandes
+const CommandeCard = ({ cmd }) => {
+  const pdfUrl = `http://localhost:5000${cmd.bonCommandeUrl}`;
+
+  return (
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition">
+      <div>
+        {cmd.clientId ? (
+          <>
+            <p className="font-medium text-gray-700">
+              👤 Client : {cmd.clientId.nom} {cmd.clientId.prenom}
+            </p>
+            <p className="text-sm text-gray-500">{cmd.clientId.email}</p>
+          </>
+        ) : (
+          <p className="font-medium text-red-600">⚠️ Client supprimé</p>
+        )}
+        <p className="text-sm text-gray-400 mt-1">
+          Date : {new Date(cmd.createdAt).toLocaleDateString()}
+        </p>
+      </div>
+
+      {cmd.bonCommandeUrl ? (
+        <a
+          href={pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          download
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          📄 Télécharger PDF
+        </a>
+      ) : (
+        <span className="text-sm text-red-500 font-medium">
+          Aucun PDF disponible
+        </span>
+      )}
     </div>
   );
 };

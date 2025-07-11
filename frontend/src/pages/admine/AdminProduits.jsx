@@ -11,20 +11,37 @@ const AdminProduits = () => {
   const [imageFile, setImageFile] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProduits, setFilteredProduits] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchProduits();
   }, []);
 
+  useEffect(() => {
+    // Filtrer les produits lorsque le terme de recherche ou la liste change
+    const filtered = produits.filter(produit =>
+      produit.nom.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProduits(filtered);
+    }, [searchTerm, produits]);
+
   const fetchProduits = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get('http://localhost:5000/api/produits');
       setProduits(res.data);
+      setFilteredProduits(res.data);
     } catch (err) {
       alert('Erreur lors du chargement des produits');
     }
   };
 
+  const handleSearch = e => {
+    setSearchTerm(e.target.value);
+  };
+  
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -86,6 +103,8 @@ const AdminProduits = () => {
     setEditingId(null);
     setShowForm(false);
   };
+  
+  
 
   const handleDelete = async id => {
     if (window.confirm('Confirmer la suppression ?')) {
@@ -106,6 +125,22 @@ const AdminProduits = () => {
           <div className={`p-6 overflow-auto transition-all duration-300 ${showForm ? 'w-2/3' : 'w-full'}`}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Gestion des Produits</h2>
+
+
+              <div className="relative flex-grow max-w-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fas fa-search text-gray-400"></i>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    placeholder="Rechercher par nom..."
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+
+
               {!showForm && (
                 <button
                   onClick={() => setShowForm(true)}
@@ -117,7 +152,7 @@ const AdminProduits = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {produits.map(produit => (
+              {filteredProduits.map(produit => (
                 <div key={produit._id} className="border p-4 rounded shadow bg-white">
                   {produit.image && (
                     <img
@@ -135,15 +170,15 @@ const AdminProduits = () => {
                   <div className="mt-2 flex gap-2">
                     <button
                       onClick={() => handleEdit(produit)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
                     >
-                      ✏️ Modifier
+                      Modifier
                     </button>
                     <button
                       onClick={() => handleDelete(produit._id)}
                       className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                     >
-                      🗑 Supprimer
+                      Supprimer
                     </button>
                   </div>
                 </div>
