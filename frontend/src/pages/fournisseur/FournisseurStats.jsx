@@ -4,81 +4,155 @@ import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
 import { useParams } from 'react-router-dom';
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
+  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend
 } from 'recharts';
 
 const FournisseurStats = () => {
   const { id } = useParams();
   const [stats, setStats] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/fournisseurs/${id}/ventes`)
-      .then(res => setStats(res.data));
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/ventes`);
+        setStats(res.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des statistiques:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [id]);
 
-  // Reformatter les données pour la courbe
   const chartData = stats.map(stat => ({
     semaine: `S${stat._id.semaine}-${stat._id.annee}`,
-    total: stat.totalVentes
+    total: stat.totalVentes,
+    commandes: stat.commandes
   }));
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1">
-        <Header />
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-indigo-600 text-white">
-        <FournisseurSidebar />
-      </div>
-
-      {/* Contenu principal */}
-      
-        <div className="w-full h-screen flex items-center justify-center bg-gray-100">
-  <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-6xl h-[90%] overflow-auto">
-  
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">📊 Statistiques Hebdomadaires</h2>
-
-          {/* Tableau des statistiques */}
-          <div className="bg-white shadow-md rounded-xl overflow-hidden mb-10">
-            <table className="min-w-full text-sm text-gray-800">
-              <thead className="bg-indigo-50 text-indigo-700 text-left">
-                <tr>
-                  <th className="px-6 py-4">Semaine</th>
-                  <th className="px-6 py-4">Année</th>
-                  <th className="px-6 py-4">Commandes</th>
-                  <th className="px-6 py-4">Total Ventes (MAD)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.map((stat, i) => (
-                  <tr key={i} className="border-t hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">{stat._id.semaine}</td>
-                    <td className="px-6 py-4">{stat._id.annee}</td>
-                    <td className="px-6 py-4 font-semibold">{stat.commandes}</td>
-                    <td className="px-6 py-4 text-green-600 font-bold">{stat.totalVentes.toFixed(2)} MAD</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Courbe des ventes */}
-          <div className="bg-white shadow-md rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">📈 Évolution des Ventes</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="semaine" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="total" stroke="#6366F1" strokeWidth={2} dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-64 bg-indigo-700 text-white min-h-screen">
+          <FournisseurSidebar />
         </div>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-800">Statistiques des ventes</h1>
+              <p className="text-gray-600 mt-1">Analyse hebdomadaire de votre activité</p>
+            </div>
+
+            {/* Stats Table */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden mb-10">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-indigo-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                        Semaine
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                        Année
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                        Commandes
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                        Total Ventes
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {stats.map((stat, i) => (
+                      <tr key={i} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {stat._id.semaine}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {stat._id.annee}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                          {stat.commandes}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold">
+                          {stat.totalVentes.toFixed(2)} MAD
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Chart Section */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-800">Évolution des ventes</h2>
+                  <p className="text-sm text-gray-500">Performance hebdomadaire</p>
+                </div>
+                <div className="flex space-x-2">
+                  <button className="px-3 py-1 text-sm bg-indigo-50 text-indigo-600 rounded-lg">Hebdomadaire</button>
+                  <button className="px-3 py-1 text-sm bg-gray-50 text-gray-600 rounded-lg">Mensuelle</button>
+                </div>
+              </div>
+              
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                    <XAxis 
+                      dataKey="semaine" 
+                      tick={{ fill: '#6b7280' }} 
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      tick={{ fill: '#6b7280' }} 
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.5rem',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="total" 
+                      stroke="#6366f1" 
+                      strokeWidth={2} 
+                      dot={{ r: 4, fill: '#6366f1' }}
+                      activeDot={{ r: 6, stroke: '#6366f1', strokeWidth: 2, fill: '#ffffff' }}
+                      name="Total Ventes (MAD)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
     </div>
   );
 };
