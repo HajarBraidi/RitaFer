@@ -156,7 +156,7 @@ const AdminUtilisateurs = () => {
               <section>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-gray-800">Clients</h2>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                     {clients.length} {clients.length === 1 ? 'client' : 'clients'}
                   </span>
                 </div>
@@ -170,7 +170,7 @@ const AdminUtilisateurs = () => {
               <section>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-gray-800">Fournisseurs</h2>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                     {fournisseurs.length} {fournisseurs.length === 1 ? 'fournisseur' : 'fournisseurs'}
                   </span>
                 </div>
