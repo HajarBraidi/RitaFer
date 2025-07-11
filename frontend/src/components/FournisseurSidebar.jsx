@@ -1,9 +1,35 @@
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { Home, BarChart2, FileText, ShoppingCart } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const FournisseurSidebar = () => {
   const { id } = useParams();
   const location = useLocation();
+  const [nonVues, setNonVues] = useState(0);
+
+useEffect(() => {
+  const fetchNonVues = async () => {  
+    try {
+      const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/commandes`);
+      const commandesNonVues = res.data.filter(cmd => !cmd.vuParFournisseur);
+
+      // Si on est sur la page documents, badge = 0
+      if (location.pathname === `/fournisseur/${id}/documents`) {
+        setNonVues(0);
+      } else {
+        setNonVues(commandesNonVues.length);
+      }
+
+    } catch (err) {
+      console.error('Erreur chargement commandes :', err);
+    }
+  };
+
+  fetchNonVues();
+}, [id, location.pathname]); // très important
+
+
 
   const links = [
     { label: 'Profil', path: `/fournisseur/${id}/profil`, icon: <Home size={18} /> },
@@ -29,7 +55,14 @@ const FournisseurSidebar = () => {
               }`}
             >
               {link.icon}
-              <span>{link.label}</span>
+              <span className="flex items-center gap-2">
+              {link.label}
+              {link.label === 'Documents' && nonVues > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              {nonVues}  
+              </span>
+               )}
+              </span>
               {/* Badge exemple */}
               {/* {i === 2 && <span className="ml-auto text-xs bg-white text-indigo-700 px-2 py-0.5 rounded-full">5</span>} */}
             </Link>

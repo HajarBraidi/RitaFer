@@ -10,6 +10,27 @@ router.post('/register', registerUser);
 //router.post('/login', loginUser);
 // POST /api/auth/login
 
+router.put('/reset-password', async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    await user.save();
+
+    res.json({ message: "Mot de passe réinitialisé avec succès." });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
+
+
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -48,7 +69,6 @@ res.json({
     res.status(500).json({ message: err.message });
   }
 });
-
 
 
 module.exports = router;

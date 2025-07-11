@@ -108,10 +108,13 @@ des matériaux de construction.
   </div>
 )}
               {msg && <p className="text-red-500 text-sm text-center">{msg}</p>}
-              <p className="text-sm text-gray-600 text-center">
-                Pas encore de compte ?{' '}
-                <a href="/register" className="text-blue-600 hover:underline">S'inscrire</a>
-              </p>
+              <div className="text-sm text-gray-600 text-center">
+  Pas encore de compte ?{' '}
+  <a href="/register" className="text-blue-600 hover:underline">S'inscrire</a>
+  <span className="mx-2 text-gray-400">|</span>
+  <a href="/forgot-password" className="text-blue-600 hover:underline">Mot de passe oublié ?</a>
+</div>
+
             </form>
           </div>
         </div>

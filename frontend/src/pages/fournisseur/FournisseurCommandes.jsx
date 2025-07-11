@@ -20,7 +20,7 @@ const FournisseurCommandes = () => {
       <FournisseurSidebar />
 
       <div className="p-8 w-full">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">📦 Commandes des Clients</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2"> Commandes des Clients</h2>
 
         {commandes.length === 0 ? (
           <p className="text-gray-600 text-lg">Aucune commande trouvée pour ce fournisseur.</p>
@@ -41,12 +41,12 @@ const FournisseurCommandes = () => {
                   )}
 
                   <p className="text-sm text-gray-600 mt-1">
-                    📅 Date de commande : {new Date(cmd.createdAt).toLocaleDateString()}
+                     Date de commande : {new Date(cmd.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
                 <div className="mt-4">
-                  <h4 className="text-md font-semibold text-gray-800 mb-2">🛒 Produits commandés :</h4>
+                  <h4 className="text-md font-semibold text-gray-800 mb-2"> Produits commandés :</h4>
                   <ul className="list-disc pl-6 space-y-1 text-gray-700">
                     {cmd.produits.map((prod, index) => (
                       <li key={index}>
@@ -58,7 +58,7 @@ const FournisseurCommandes = () => {
                 </div>
 
                 <div className="mt-4 text-right">
-                  <p className="text-lg font-bold text-gray-900">💰 Total : {cmd.total} MAD</p>
+                  <p className="text-lg font-bold text-gray-900"> Total : {cmd.total} MAD</p>
                 </div>
               </div>
             ))}

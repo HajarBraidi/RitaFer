@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
   const [selectedId, setSelectedId] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
   const [showProduits, setShowProduits] = useState(false);
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProduits, setFilteredProduits] = useState([]);
   const navigate = useNavigate();
   const calculTotal = () => {
   return panier.reduce((total, item) => total + item.total, 0);
@@ -40,7 +41,20 @@ useEffect(() => {
   fetchProduits();
 }, []);
 
-  const handleValiderCommande = async () => {
+  useEffect(() => {
+    // Filtrer les produits lorsque le terme de recherche ou la liste change
+    const filtered = produits.filter(produit =>
+      produit.nom.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProduits(filtered);
+  }, [searchTerm, produits]);
+
+  const handleSearch = e => {
+    setSearchTerm(e.target.value);
+  };
+
+
+const handleValiderCommande = async () => {
 
     console.log("👤 client:", client);
 console.log("🆔 client._id:", client?._id);
@@ -217,7 +231,29 @@ console.log("🛒 panier:", panier);
             {/* Produits */}
             <div className="w-2/3">
               <h3 className="text-2xl font-semibold mb-6 text-gray-800">Produits disponibles</h3>
-              {Object.entries(produitsParFamille).map(([famille, produitsFamille]) => (
+
+               <div className="relative flex-grow max-w-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fas fa-search text-gray-400"></i>
+                  </div>
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    placeholder="Rechercher par nom..."
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+
+
+
+              {Object.entries(filteredProduits.reduce((acc, produit) => {
+              const famille = produit.famille || 'Autres';
+               if (!acc[famille]) acc[famille] = [];
+               acc[famille].push(produit);
+               return acc;
+              }, {})).map(([famille, produitsFamille]) => (
+
 
                 <div key={famille} className="mb-10">
                   <h4 className="text-xl font-bold mb-4 text-blue-800">{famille}</h4>

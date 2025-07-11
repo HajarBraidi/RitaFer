@@ -9,6 +9,7 @@ const BonDeCommande = () => {
   const navigate = useNavigate();
   const { fournisseur, panier } = location.state || {};
   const date = new Date().toLocaleDateString();
+  
 
   // ✅ Vider le panier localStorage une fois arrivé ici
   useEffect(() => {
@@ -25,6 +26,14 @@ const BonDeCommande = () => {
 
   const total = panier.reduce((sum, item) => sum + item.total, 0);
 const genererPDF = async () => {
+
+  const utilisateur = JSON.parse(localStorage.getItem("user"));
+  console.log("Utilisateur connecté :", utilisateur);
+  if (!utilisateur || !utilisateur._id) {
+    alert("Utilisateur non connecté.");
+    return;
+  }
+
   const doc = new jsPDF();
 
   doc.setFontSize(18);
@@ -66,8 +75,8 @@ const genererPDF = async () => {
   // ✅ Envoyer au backend
   const formData = new FormData();
   formData.append('pdf', pdfBlob, `bon_commande_${Date.now()}.pdf`);
-  formData.append('clientId', fournisseur.clientId); // ou à récupérer du localStorage / Auth context
-  formData.append('fournisseurId', fournisseur.fournisseurId);
+  formData.append('clientId', utilisateur._id); // ou à récupérer du localStorage / Auth context
+  formData.append('fournisseurId', fournisseur._id);
   formData.append('total', total);
   formData.append('produits', JSON.stringify(panier));
 

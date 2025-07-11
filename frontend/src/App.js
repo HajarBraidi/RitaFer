@@ -12,7 +12,7 @@ import AdminDashboard from './pages/admine/AdminDashboard';
 import AdminProfil from './pages/admine/AdminProfil';
 import AdminProduits from './pages/admine/AdminProduits';
 import AdminUtilisateurs from './pages/admine/AdminUtilisateurs';
-
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   return (
@@ -34,6 +34,7 @@ function App() {
         <Route path="/admin/:id/profil" element={<AdminProfil />} />
         <Route path="/admin/:id/produits" element={<AdminProduits />} />
         <Route path="/admin/:id/utilisateurs" element={<AdminUtilisateurs />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </Router>
 

@@ -69,14 +69,19 @@ router.get('/:id/commandes', async (req, res) => {
   }
 });
 
-// PUT /api/orders/:orderId/vu
+// PUT /api/fournisseurs/orders/:orderId/vu
 router.put('/orders/:orderId/vu', async (req, res) => {
   try {
-    const updated = await Order.findByIdAndUpdate(req.params.orderId, { vuParFournisseur: true }, { new: true });
+    const updated = await Order.findByIdAndUpdate(
+      req.params.orderId,
+      { vuParFournisseur: true },
+      { new: true }
+    );
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 module.exports = router;
