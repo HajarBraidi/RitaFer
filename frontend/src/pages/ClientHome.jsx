@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
 
 const ClientHome = () => {
-  // [Tous les hooks et fonctions existants restent exactement les mêmes...]
+  
 const [client, setClient] = useState(null);
   const [fournisseurs, setFournisseurs] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -19,6 +19,8 @@ const [client, setClient] = useState(null);
 
   
 const [produits, setProduits] = useState([]);
+
+
 useEffect(() => {
   if (showProduits) {
     axios.get('http://localhost:5000/api/produits')
@@ -29,6 +31,7 @@ useEffect(() => {
 
 
 useEffect(() => {
+  
   const fetchProduits = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/produits');
@@ -57,26 +60,24 @@ useEffect(() => {
 const handleValiderCommande = async () => {
 
     console.log("👤 client:", client);
-console.log("🆔 client._id:", client?._id);
-console.log("🏭 fournisseurSelectionné:", fournisseurSelectionné);
-console.log("🛒 panier:", panier);
+    console.log("🆔 client._id:", client?._id);
+    console.log("🏭 fournisseurSelectionné:", fournisseurSelectionné);
+    console.log("🛒 panier:", panier);
 
   if (!client || !client._id || !fournisseurSelectionné || panier.length === 0) {
     alert("Client ou fournisseur manquant, ou panier vide.");
     return;
   }
 
-  const dataCommande = {
-    clientId: client._id,  // ✅ C'était manquant !
-    fournisseurId: fournisseurSelectionné._id,
-    produits: panier,
-    total: calculTotal()
-  };
+    const dataCommande = {
+      clientId: client._id,  // ✅ C'était manquant !
+      fournisseurId: fournisseurSelectionné._id,
+      produits: panier,
+      total: calculTotal()
+   };
 
   try {
     console.log("📦 Données envoyées :", dataCommande);
-
-    await axios.post('http://localhost:5000/api/orders', dataCommande);
 
     navigate('/bon-de-commande', {
       state: {
@@ -134,8 +135,8 @@ console.log("🛒 panier:", panier);
      }, [panier]);
 
   // Sauvegarde fournisseur localStorage
-    useEffect(() => {
-    if (fournisseurSelectionné) {
+     useEffect(() => {
+     if (fournisseurSelectionné) {
       localStorage.setItem('fournisseur', JSON.stringify(fournisseurSelectionné));
     }
     }, [fournisseurSelectionné]);
@@ -160,14 +161,14 @@ console.log("🛒 panier:", panier);
     if (found) {
       setFournisseurSelectionné(found);
     }
-   }, [selectedId, fournisseurs]);
+    }, [selectedId, fournisseurs]);
 
    const produitsParFamille = filteredProduits.reduce((acc, produit) => {
-  const famille = produit.famille || 'Autres';
-  if (!acc[famille]) acc[famille] = [];
-  acc[famille].push(produit);
-  return acc;
-}, {});
+   const famille = produit.famille || 'Autres';
+   if (!acc[famille]) acc[famille] = [];
+   acc[famille].push(produit);
+   return acc;
+   }, {});
 
 
   return (

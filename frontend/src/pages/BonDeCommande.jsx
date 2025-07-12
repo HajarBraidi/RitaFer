@@ -71,13 +71,13 @@ const BonDeCommande = () => {
       } else {
         throw new Error("Erreur serveur");
       }
-    } catch (error) {
+      } catch (error) {
       console.error("Erreur lors de l'envoi :", error);
       alert("Erreur lors de l'envoi du bon de commande");
-    } finally {
+      } finally {
       setIsSending(false);
-    }
-  };
+      }
+      };
 
   const createPDFDocument = () => {
     const doc = new jsPDF();

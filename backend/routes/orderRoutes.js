@@ -60,7 +60,6 @@ router.post('/', async (req, res) => {
 });
 
 
-// ✅ Route spéciale PDF : POST /api/commandes/pdf
 
 
 module.exports = router;
