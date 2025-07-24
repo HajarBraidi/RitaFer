@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
 import { useParams } from 'react-router-dom';

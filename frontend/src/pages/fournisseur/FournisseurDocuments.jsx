@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
 import API from '../../axiosInstance';
 
+
 const FournisseurDocuments = () => {
   const { id } = useParams();
   const [commandes, setCommandes] = useState([]);
@@ -27,15 +28,16 @@ const FournisseurDocuments = () => {
 
   // Marquer comme vues automatiquement
   useEffect(() => {
-    commandes.forEach((cmd) => {
-      if (!cmd.vuParFournisseur) {
-        API
-          .put(`/api/fournisseurs/orders/${cmd._id}/vu`)
-          .then(() => console.log(`Commande ${cmd._id} marquée comme vue`))
-          .catch((err) => console.error('Erreur maj commande vue:', err));
-      }
+  const nonVues = commandes.filter(cmd => !cmd.vuParFournisseur);
+  if (nonVues.length > 0) {
+    nonVues.forEach(cmd => {
+      API.put(`/api/fournisseurs/orders/${cmd._id}/vu`)
+        .then(() => console.log(`Commande ${cmd._id} marquée comme vue`))
+        .catch((err) => console.error('Erreur maj commande vue:', err));
     });
-  }, [commandes]);
+  }
+}, [commandes]);
+
 
   const today = new Date().toISOString().slice(0, 10);
   

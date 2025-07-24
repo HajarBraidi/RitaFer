@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import Header from '../components/Header';
 import autoTable from 'jspdf-autotable';
-import API from '../axiosInstance';
+//import API from '../axiosInstance';
+import axios from 'axios';
 
 
 const BonDeCommande = () => {
@@ -63,23 +64,25 @@ const BonDeCommande = () => {
       formData.append('total', total);
       formData.append('produits', JSON.stringify(panier));
 
-      const res = API.fetch('/api/commandes/pdf', {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/commandes/pdf`, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+});
 
-      if (res.ok) {
-        alert("Le bon de commande a été envoyé au fournisseur avec succès !");
-      } else {
-        throw new Error("Erreur serveur");
-      }
-      } catch (error) {
-      console.error("Erreur lors de l'envoi :", error);
-      alert("Erreur lors de l'envoi du bon de commande");
-      } finally {
-      setIsSending(false);
-      }
-      };
+
+
+      if (res.status === 201) {
+      alert("Le bon de commande a été envoyé au fournisseur avec succès !");
+      
+    } else {
+      throw new Error("Erreur serveur");
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'envoi :", error);
+    alert("Erreur lors de l'envoi du bon de commande");
+  } finally {
+    setIsSending(false);
+  }
+};
 
   const createPDFDocument = () => {
     const doc = new jsPDF();

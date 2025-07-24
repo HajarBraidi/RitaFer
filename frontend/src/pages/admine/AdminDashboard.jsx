@@ -5,6 +5,7 @@ import AdminSidebar from '../../components/AdminSidebar';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 import API from '../../axiosInstance';
 
+
 const AdminDashboard = () => {
   const [clients, setClients] = useState(0);
   const [fournisseurs, setFournisseurs] = useState(0);

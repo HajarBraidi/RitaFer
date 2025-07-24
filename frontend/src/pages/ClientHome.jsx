@@ -30,23 +30,23 @@ useEffect(() => {
 }, [showProduits]);
 
 
-useEffect(() => {
+//useEffect(() => {
   
-  const fetchProduits = async () => {
-    try {
-      const res = API.get('/api/produits');
-      setProduits(res.data);
-    } catch (err) {
-      console.error('Erreur chargement produits', err);
-    }
-  };
+  //const fetchProduits = async () => {
+   // try {
+    //  const res = await API.get('/api/produits');
+     // setProduits(res.data);
+    //} catch (err) {
+    //  console.error('Erreur chargement produits', err);
+    //}
+  //};
 
-  fetchProduits();
-}, []);
+  //fetchProduits();
+//}, []);
 
   useEffect(() => {
     // Filtrer les produits lorsque le terme de recherche ou la liste change
-    const filtered = produits.filter(produit =>
+    const filtered = (produits || []).filter(produit =>
       produit.nom.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredProduits(filtered);
@@ -283,10 +283,11 @@ const handleValiderCommande = async () => {
                         {produit.image && (
                           <div className="h-48 overflow-hidden">
                             <img
-                              src={`${process.env.REACT_APP_API_URL}${produit.image}`}
-                              alt={produit.nom}
-                              className="w-full h-full object-cover"
+                            src={`${process.env.REACT_APP_API_URL}${produit.image}`}
+                            alt={produit.nom}
+                            className="w-full h-full object-cover"
                             />
+
                           </div>
                         )}
                         
