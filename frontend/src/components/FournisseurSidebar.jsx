@@ -1,7 +1,8 @@
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { Home, BarChart2, FileText, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
+import API from '../axiosInstance';
 
 const FournisseurSidebar = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const FournisseurSidebar = () => {
 useEffect(() => {
   const fetchNonVues = async () => {  
     try {
-      const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/commandes`);
+      const res = await API.get(`/api/fournisseurs/${id}/commandes`);
       const commandesNonVues = res.data.filter(cmd => !cmd.vuParFournisseur);
 
       // Si on est sur la page documents, badge = 0

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
-
+import API from '../axiosInstance';
 const ClientHome = () => {
   
 const [client, setClient] = useState(null);
@@ -23,7 +23,7 @@ const [produits, setProduits] = useState([]);
 
 useEffect(() => {
   if (showProduits) {
-    axios.get('http://localhost:5000/api/produits')
+    API.get('/api/produits')
       .then(res => setProduits(res.data))
       .catch(err => console.error("Erreur mise à jour produits", err));
   }
@@ -34,7 +34,7 @@ useEffect(() => {
   
   const fetchProduits = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/produits');
+      const res = API.get('/api/produits');
       setProduits(res.data);
     } catch (err) {
       console.error('Erreur chargement produits', err);
@@ -150,7 +150,7 @@ const handleValiderCommande = async () => {
       setClient(JSON.parse(storedUser));
     }
 
-    axios.get('http://localhost:5000/api/users?role=fournisseur')
+    API.get('/api/users?role=fournisseur')
       .then(res => setFournisseurs(res.data))
       .catch(err => console.error(err));
     }, []);
@@ -185,7 +185,9 @@ const handleValiderCommande = async () => {
         {/* Section Fournisseurs */}
         <section className="mb-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {fournisseurs.map((f) => {
+            {fournisseurs
+            .filter(f => f.actif === true)
+            .map((f) => {
               const isExpanded = expandedId === f._id;
               return (
                 <div
@@ -199,7 +201,7 @@ const handleValiderCommande = async () => {
                       <input
                         type="radio"
                         name="fournisseur"
-                        className="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="mt-1 h-4 w-4 text-indigo-600 border-gray-300 focus:ring-blue-500"
                         checked={selectedId === f._id}
                         onChange={() => setSelectedId(f._id)}
                       />
@@ -219,7 +221,7 @@ const handleValiderCommande = async () => {
                         
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : f._id)}
-                          className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                          className="mt-2 text-sm font-medium text-indigo-600 hover:text-blue-700"
                         >
                           {isExpanded ? 'Réduire' : 'Voir plus'}
                         </button>
@@ -237,7 +239,7 @@ const handleValiderCommande = async () => {
           <div className="text-center mb-12">
             <button
               onClick={() => setShowProduits(true)}
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
             >
               Voir les produits disponibles
               <svg className="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,7 +283,7 @@ const handleValiderCommande = async () => {
                         {produit.image && (
                           <div className="h-48 overflow-hidden">
                             <img
-                              src={`http://localhost:5000${produit.image}`}
+                              src={`${process.env.REACT_APP_API_URL}${produit.image}`}
                               alt={produit.nom}
                               className="w-full h-full object-cover"
                             />
@@ -290,7 +292,7 @@ const handleValiderCommande = async () => {
                         
                         <div className="p-5">
                           <h4 className="text-lg font-medium text-gray-900 mb-1">{produit.nom}</h4>
-                          <p className="text-blue-600 font-semibold mb-3">{produit.prix} MAD</p>
+                          <p className="text-indigo-600 font-semibold mb-3">{produit.prix} </p>
                           
                           {produit.types?.length > 0 ? (
                             produit.types.map((type) => (
@@ -309,7 +311,7 @@ const handleValiderCommande = async () => {
                                       const input = document.getElementById(`qty-${produit.nom}-${type}`);
                                       ajouterAuPanier(produit, type, parseInt(input.value));
                                     }}
-                                    className="px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    className="px-3 py-1 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                   >
                                     Ajouter
                                   </button>
@@ -350,7 +352,7 @@ const handleValiderCommande = async () => {
             {/* Panier */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-4">
-                <div className="bg-blue-600 px-6 py-4">
+                <div className="bg-indigo-600 px-6 py-4">
                   <h3 className="text-lg font-medium text-white">Votre Panier</h3>
                 </div>
                 
@@ -402,7 +404,7 @@ const handleValiderCommande = async () => {
                         <div className="mt-6">
                           <button
                             onClick={handleValiderCommande}
-                            className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu-500"
+                            className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bleu-500"
                           >
                             Valider la commande
                             <svg className="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

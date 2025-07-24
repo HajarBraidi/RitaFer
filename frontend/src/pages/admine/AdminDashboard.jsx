@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import Header from '../../components/Header';
 import AdminSidebar from '../../components/AdminSidebar';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
+import API from '../../axiosInstance';
 
 const AdminDashboard = () => {
   const [clients, setClients] = useState(0);
@@ -15,10 +16,10 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const [clientsRes, fournisseursRes, commandesRes, evolutionRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/admin/stats/clients'),
-          axios.get('http://localhost:5000/api/admin/stats/fournisseurs'),
-          axios.get('http://localhost:5000/api/admin/stats/commandes'),
-          axios.get('http://localhost:5000/api/admin/stats/evolution-commandes')
+          API.get('/api/admin/stats/clients'),
+          API.get('/api/admin/stats/fournisseurs'),
+          API.get('/api/admin/stats/commandes'),
+          API.get('/api/admin/stats/evolution-commandes')
         ]);
         
         setClients(clientsRes.data.count);
@@ -53,7 +54,7 @@ const AdminDashboard = () => {
       <Header />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-indigo-700 text-white min-h-screen">
+        <div className="w-64 bg-indigo-700 text-white min-h-screen fixed">
           <AdminSidebar />
         </div>
 
@@ -163,15 +164,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* Recent Activity (Placeholder) */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Activité récente</h2>
-              <div className="text-center py-8 text-gray-500">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p className="mt-2">Aucune activité récente</p>
-              </div>
-            </div>
+            
           </div>
         </main>
       </div>

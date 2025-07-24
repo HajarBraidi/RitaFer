@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import Header from '../../components/Header';
 import AdminSidebar from '../../components/AdminSidebar';
+import API from '../../axiosInstance';
 
 const AdminUtilisateurs = () => {
   const [admins, setAdmins] = useState([]);
@@ -14,7 +15,7 @@ const AdminUtilisateurs = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/users');
+        const res = await API.get('/api/admin/users');
         const allUsers = res.data;
         
         setAdmins(allUsers.filter(u => u.role === 'admin'));
@@ -36,9 +37,9 @@ const AdminUtilisateurs = () => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
     
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${userId}`);
+      await API.delete(`/api/admin/users/${userId}`);
       // Recharger la liste après suppression
-      const res = await axios.get('http://localhost:5000/api/admin/users');
+      const res = await API.get('/api/admin/users');
       const allUsers = res.data;
       setAdmins(allUsers.filter(u => u.role === 'admin'));
       setClients(allUsers.filter(u => u.role === 'client'));
@@ -109,7 +110,7 @@ const AdminUtilisateurs = () => {
       
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-64 bg-indigo-600 text-white overflow-auto">
+        <div className="w-64 bg-indigo-600 text-white overflow-auto fixed">
           <AdminSidebar />
         </div>
 

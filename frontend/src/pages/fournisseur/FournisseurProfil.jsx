@@ -3,6 +3,7 @@ import axios from 'axios';
 import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
 import { useParams } from 'react-router-dom';
+import API from '../../axiosInstance';
 
 const FournisseurProfil = () => {
   const { id } = useParams();
@@ -14,7 +15,7 @@ const FournisseurProfil = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}`);
+        const res = await API.get(`/api/fournisseurs/${id}`);
         setProfil(res.data);
         setForm(res.data);
       } catch (error) {
@@ -33,7 +34,7 @@ const FournisseurProfil = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await axios.put(`http://localhost:5000/api/fournisseurs/${id}`, form);
+      await API.put(`/api/fournisseurs/${id}`, form);
       setProfil(form);
       setEditMode(false);
     } catch (error) {
@@ -66,7 +67,7 @@ const FournisseurProfil = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
-        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen" />
+        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen fixed" />
         
         <main className="flex-1 p-8">
           <div className="max-w-6xl mx-auto">

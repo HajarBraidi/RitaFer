@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+//import axios from 'axios';
+import API from '../axiosInstance';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [msg, setMsg] = useState('');
+  const [msg ] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    const res = await API.post('/api/auth/login', { email, password });
     
     localStorage.setItem('token', res.data.token);
 
@@ -62,12 +63,8 @@ const Login = () => {
 des matériaux de construction.
             </div>
           </div>
-          <ul className="circles">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <li key={i}></li>
-            ))}
-          </ul>
         </div>
+        
 
         <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full w-2/5 xl:w-2/5 p-8 md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white">
           <div className="max-w-md w-full space-y-6">

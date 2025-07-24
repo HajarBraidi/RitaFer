@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import API from '../axiosInstance';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [role, setRole] = useState('');
   const [formData, setFormData] = useState({
     nom: '',
@@ -20,7 +23,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { ...formData, role });
+      await API.post('/api/auth/register', { ...formData, role });
       alert('Inscription réussie ! Vous pouvez vous connecter.');
       window.location.href = '/login';
     } catch (err) {
@@ -50,6 +53,13 @@ const Register = () => {
                 className="w-full py-2 font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full hover:from-blue-500 hover:to-indigo-600 transition duration-300"
               >
                 Je suis un fournisseur
+              </button>
+              <button
+                onClick={()=> navigate(-1)}
+                type="button"
+                className="w-full py-2 font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full hover:from-blue-500 hover:to-indigo-600 transition duration-300"
+              >
+               Retour 
               </button>
           </div>
         ) : (

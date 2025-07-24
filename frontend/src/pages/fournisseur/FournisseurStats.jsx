@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import Header from '../../components/Header';
 import FournisseurSidebar from '../../components/FournisseurSidebar';
 import { useParams } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend
 } from 'recharts';
+import API from '../../axiosInstance';
 
 const FournisseurStats = () => {
   const { id } = useParams();
@@ -15,7 +16,7 @@ const FournisseurStats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/ventes`);
+        const res = await API.get(`/api/fournisseurs/${id}/ventes`);
         setStats(res.data);
       } catch (error) {
         console.error("Erreur lors du chargement des statistiques:", error);
@@ -45,7 +46,7 @@ const FournisseurStats = () => {
       <Header />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-indigo-700 text-white min-h-screen">
+        <div className="w-64 bg-indigo-700 text-white min-h-screen fixed">
           <FournisseurSidebar />
         </div>
 
