@@ -27,7 +27,7 @@ const AdminProduits = () => {
   const fetchProduits = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/produits');
+      const res = await axios.get('http://192.168.3.91:5000/api/produits');
       setProduits(res.data);
       setFilteredProduits(res.data);
     } catch (err) {
@@ -67,11 +67,11 @@ const AdminProduits = () => {
     try {
       setIsLoading(true);
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/produits/${editingId}`, formData, {
+        await axios.put(`http://192.168.3.91:5000/api/produits/${editingId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       } else {
-        await axios.post('http://localhost:5000/api/produits', formData, {
+        await axios.post('http://192.168.3.91:5000/api/produits', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
       }
@@ -110,7 +110,7 @@ const AdminProduits = () => {
     if (window.confirm('Confirmer la suppression ?')) {
       try {
         setIsLoading(true);
-        await axios.delete(`http://localhost:5000/api/produits/${id}`);
+        await axios.delete(`http://192.168.3.91:5000/api/produits/${id}`);
         fetchProduits();
       } catch (err) {
         alert("Erreur lors de la suppression");
@@ -125,7 +125,7 @@ const AdminProduits = () => {
       <Header />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-indigo-700 text-white min-h-screen">
+        <div className="w-64 bg-indigo-700 text-white min-h-screen fixed">
           <AdminSidebar />
         </div>
 
@@ -183,7 +183,7 @@ const AdminProduits = () => {
                     {produit.image && (
                       <div className="h-48 overflow-hidden">
                         <img
-                          src={`http://localhost:5000${produit.image}`}
+                          src={`http://192.168.3.91:5000${produit.image}`}
                           alt={produit.nom}
                           className="w-full h-full object-cover"
                         />

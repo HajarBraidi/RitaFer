@@ -14,7 +14,7 @@ const FournisseurProfil = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}`);
+        const res = await axios.get(`http://192.168.3.91:5000/api/fournisseurs/${id}`);
         setProfil(res.data);
         setForm(res.data);
       } catch (error) {
@@ -33,7 +33,7 @@ const FournisseurProfil = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await axios.put(`http://localhost:5000/api/fournisseurs/${id}`, form);
+      await axios.put(`http://192.168.3.91:5000/api/fournisseurs/${id}`, form);
       setProfil(form);
       setEditMode(false);
     } catch (error) {
@@ -66,7 +66,7 @@ const FournisseurProfil = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
-        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen" />
+        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen fixed" />
         
         <main className="flex-1 p-8">
           <div className="max-w-6xl mx-auto">

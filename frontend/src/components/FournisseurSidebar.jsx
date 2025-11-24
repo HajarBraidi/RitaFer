@@ -11,7 +11,7 @@ const FournisseurSidebar = () => {
 useEffect(() => {
   const fetchNonVues = async () => {  
     try {
-      const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/commandes`);
+      const res = await axios.get(`http://192.168.3.91:5000/api/fournisseurs/${id}/commandes`);
       const commandesNonVues = res.data.filter(cmd => !cmd.vuParFournisseur);
 
       // Si on est sur la page documents, badge = 0

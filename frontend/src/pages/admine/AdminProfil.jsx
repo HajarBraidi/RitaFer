@@ -16,20 +16,20 @@ const AdminProfil = () => {
     if (!id) return;
     setLoading(true);
     setError('');
-    axios.get(`http://localhost:5000/api/admin/${id}`)
+    axios.get(`http://192.168.3.91:5000/api/admin/${id}`)
       .then(res => setAdmin(res.data))
       .catch(err => setError(err.response?.data?.message || err.message))
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  //const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess('');
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/admin', form);
+      await axios.post('http://192.168.3.91:5000/api/admin', form);
       setSuccess("✅ Administrateur créé avec succès !");
       setForm({ nom: '', prenom: '', email: '', password: '' });
     } catch (err) {
@@ -66,7 +66,7 @@ const AdminProfil = () => {
     <div className="bg-gray-50 min-h-screen">
       <Header />
       <div className="flex">
-        <AdminSidebar className="w-64 bg-indigo-700 text-white min-h-screen" />
+        <AdminSidebar className="w-64 bg-indigo-700 text-white min-h-screen fixed" />
         
         <main className="flex-1 p-8">
           <div className="max-w-5xl mx-auto">

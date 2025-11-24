@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const res = await axios.put('http://localhost:5000/api/auth/reset-password', {
+      const res = await axios.put('http://192.168.3.91:5000/api/auth/reset-password', {
         email,
         newPassword
       });
@@ -68,10 +68,18 @@ const ForgotPassword = () => {
 
         <button
           type="submit"
-          className="w-full py-2 text-white bg-blue-600 hover:bg-blue-700 rounded"
+          className="w-full py-2 font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full hover:from-blue-500 hover:to-indigo-600 transition duration-300"
         >
           Réinitialiser
         </button>
+
+        <button
+                onClick={()=> navigate(-1)}
+                type="button"
+                className="w-full py-2 font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full hover:from-blue-500 hover:to-indigo-600 transition duration-300"
+              >
+               Retour 
+              </button>
       </form>
     </div>
   );

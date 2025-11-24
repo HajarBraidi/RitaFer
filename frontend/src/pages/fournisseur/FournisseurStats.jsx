@@ -15,7 +15,7 @@ const FournisseurStats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/ventes`);
+        const res = await axios.get(`http://192.168.3.91:5000/api/fournisseurs/${id}/ventes`);
         setStats(res.data);
       } catch (error) {
         console.error("Erreur lors du chargement des statistiques:", error);
@@ -45,7 +45,7 @@ const FournisseurStats = () => {
       <Header />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 bg-indigo-700 text-white min-h-screen">
+        <div className="w-64 bg-indigo-700 text-white min-h-screen fixed">
           <FournisseurSidebar />
         </div>
 

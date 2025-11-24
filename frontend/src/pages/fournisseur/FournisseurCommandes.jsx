@@ -13,7 +13,7 @@ const FournisseurCommandes = () => {
   useEffect(() => {
     const fetchCommandes = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/commandes`);
+        const res = await axios.get(`http://192.168.3.91:5000/api/fournisseurs/${id}/commandes`);
         setCommandes(res.data);
       } catch (error) {
         console.error("Erreur lors du chargement des commandes:", error);
@@ -50,7 +50,7 @@ const FournisseurCommandes = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
-        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen" />
+        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen fixed" />
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">

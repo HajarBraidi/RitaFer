@@ -13,7 +13,7 @@ const FournisseurDocuments = () => {
   useEffect(() => {
     const fetchCommandes = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/fournisseurs/${id}/commandes`);
+        const res = await axios.get(`http://192.168.3.91:5000/api/fournisseurs/${id}/commandes`);
         setCommandes(res.data);
       } catch (err) {
         console.error('Erreur lors de la récupération des commandes :', err);
@@ -29,7 +29,7 @@ const FournisseurDocuments = () => {
     commandes.forEach((cmd) => {
       if (!cmd.vuParFournisseur) {
         axios
-          .put(`http://localhost:5000/api/fournisseurs/orders/${cmd._id}/vu`)
+          .put(`http://192.168.3.91:5000/api/fournisseurs/orders/${cmd._id}/vu`)
           .then(() => console.log(`Commande ${cmd._id} marquée comme vue`))
           .catch((err) => console.error('Erreur maj commande vue:', err));
       }
@@ -67,7 +67,7 @@ const FournisseurDocuments = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
-        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen" />
+        <FournisseurSidebar className="w-64 bg-indigo-700 text-white min-h-screen fixed" />
 
         <main className="flex-1 p-8">
           <div className="max-w-6xl mx-auto">
@@ -158,7 +158,7 @@ const FournisseurDocuments = () => {
 };
 
 const CommandeCard = ({ cmd }) => {
-  const pdfUrl = `http://localhost:5000${cmd.bonCommandeUrl}`;
+  const pdfUrl = `REACT_APP_API_URL${cmd.bonCommandeUrl}`;
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-shadow">
